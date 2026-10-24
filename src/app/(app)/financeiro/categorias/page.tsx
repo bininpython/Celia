@@ -5,12 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PageHeader } from "@/components/shared/page-header";
 import { DRE_GROUP_LABELS, NATURE_LABELS, TX_TYPE_LABELS } from "@/lib/labels";
+import { requireModule } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { CategoryDialog, CategoryToggle } from "./category-dialog";
 
 export const metadata: Metadata = { title: "Categorias financeiras" };
 
 export default async function CategoriesPage() {
+  await requireModule("financeiro");
   const supabase = await createClient();
   const { data } = await supabase.from("financial_categories").select("*").order("type", { ascending: false }).order("name");
   return (

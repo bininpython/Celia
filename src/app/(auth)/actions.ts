@@ -1,5 +1,7 @@
 "use server";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { readDemoRole } from "@/lib/demo/session";
+import { isDemoMode } from "@/lib/env";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
@@ -12,7 +14,17 @@ const credentials = z.object({
 
 export type AuthState = { error?: string; message?: string };
 
+/** Modo demonstração: entra com o perfil escolhido, sem senha. */
+export async function enterDemo(formData: FormData) {
+  if (!isDemoMode()) redirect("/login");
+  const role = readDemoRole(String(formData.get("role")));
+  if (!role) redirect("/login");
+  (await cookies()).set("demo_role", role, { path: "/", sameSite: "lax", httpOnly: true, maxAge: 60 * 60 * 8 });
+  redirect("/");
+}
+
 export async function signIn(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  if (isDemoMode()) return { error: "Modo demonstração: escolha um perfil para visitar." };
   const parsed = credentials.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
   const supabase = await createClient();
@@ -25,12 +37,17 @@ export async function signIn(_prev: AuthState, formData: FormData): Promise<Auth
 }
 
 export async function signOut() {
+  if (isDemoMode()) {
+    (await cookies()).delete("demo_role");
+    redirect("/login");
+  }
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect("/login");
 }
 
 export async function requestPasswordReset(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  if (isDemoMode()) return { error: "Indisponível no modo demonstração." };
   const email = z.email().safeParse(formData.get("email"));
   if (!email.success) return { error: "Informe um e-mail válido." };
   const h = await headers();
@@ -50,6 +67,7 @@ export async function updatePassword(_prev: AuthState, formData: FormData): Prom
     .refine((v) => v.password === v.confirm, { message: "As senhas não conferem" });
   const parsed = schema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message };
+  if (isDemoMode()) return { error: "Modo demonstração: a senha não é alterada." };
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   if (!data.user) return { error: "Link expirado. Solicite uma nova redefinição de senha." };

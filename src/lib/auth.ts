@@ -1,6 +1,10 @@
 import "server-only";
 import { cache } from "react";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { DEMO_PROFILE_IDS, DEMO_STUDENT_ID, getDemoData } from "@/lib/demo/data";
+import { readDemoRole } from "@/lib/demo/session";
+import { isDemoMode } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { canAccess, homeFor, type Module, type Role } from "@/lib/permissions";
 
@@ -16,6 +20,20 @@ export type SessionUser = {
 
 /** Data Access Layer: usuário autenticado + perfil (memoizado por requisição). */
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
+  if (isDemoMode()) {
+    const role = readDemoRole((await cookies()).get("demo_role")?.value);
+    if (!role) return null;
+    const profile = getDemoData().profiles!.find((p) => p.id === DEMO_PROFILE_IDS[role])!;
+    return {
+      id: String(profile.id),
+      email: String(profile.email),
+      fullName: String(profile.full_name),
+      role,
+      gymId: String(profile.gym_id),
+      gymName: "Studio Personal Célia Barbosa",
+      studentId: role === "aluno" ? DEMO_STUDENT_ID : null,
+    };
+  }
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return null;

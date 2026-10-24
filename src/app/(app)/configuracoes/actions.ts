@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { action, dbError, fail, ok } from "@/lib/action";
 import { getSessionUser } from "@/lib/auth";
+import { DEMO_WRITE_MESSAGE } from "@/lib/demo/client";
+import { isDemoMode } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
 import { gymSettingsSchema } from "@/lib/validators/admin";
 
@@ -35,6 +37,7 @@ export const saveBrandColor = action("configuracoes", z.object({ color: z.string
 export async function uploadLogo(formData: FormData) {
   const user = await getSessionUser();
   if (!user || user.role !== "admin") return fail("Sem permissão.");
+  if (isDemoMode()) return fail(DEMO_WRITE_MESSAGE);
   const file = formData.get("logo");
   if (!(file instanceof File)) return fail("Arquivo inválido.");
   if (!["image/png", "image/jpeg", "image/webp", "image/svg+xml"].includes(file.type)) return fail("Use PNG, JPG, WEBP ou SVG.");

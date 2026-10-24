@@ -11,9 +11,12 @@ export async function proxy(request: NextRequest) {
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !key) {
-    if (pathname === "/configuracao-pendente") return NextResponse.next();
-    return NextResponse.redirect(new URL("/configuracao-pendente", request.url));
+
+  // Modo demonstração: sem banco; a "sessão" é o perfil escolhido na tela de entrada
+  if (process.env.NEXT_PUBLIC_DEMO_MODE === "true" || !url || !key) {
+    const hasRole = !!request.cookies.get("demo_role")?.value;
+    if (!hasRole && !isPublic) return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.next();
   }
 
   let response = NextResponse.next({ request });

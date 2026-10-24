@@ -1,12 +1,18 @@
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
-import { publicEnv } from "@/lib/env";
+import { createDemoClient } from "@/lib/demo/client";
+import { readDemoRole } from "@/lib/demo/session";
+import { isDemoMode, publicEnv } from "@/lib/env";
 import type { Database } from "@/types/database";
 
 /** Cliente Supabase com a sessão do usuário (RLS aplicado). */
 export async function createClient() {
   const cookieStore = await cookies();
+  if (isDemoMode()) {
+    // Cliente em memória (somente leitura) com o mesmo formato do supabase-js
+    return createDemoClient(readDemoRole(cookieStore.get("demo_role")?.value) ?? "admin") as unknown as SupabaseServerClient;
+  }
   const env = publicEnv();
   return createServerClient<Database>(env.NEXT_PUBLIC_SUPABASE_URL, env.NEXT_PUBLIC_SUPABASE_ANON_KEY, {
     cookies: {
@@ -24,4 +30,5 @@ export async function createClient() {
   });
 }
 
-export type ServerSupabase = Awaited<ReturnType<typeof createClient>>;
+type SupabaseServerClient = ReturnType<typeof createServerClient<Database>>;
+export type ServerSupabase = SupabaseServerClient;

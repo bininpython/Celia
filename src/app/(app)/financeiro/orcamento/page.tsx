@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PageHeader } from "@/components/shared/page-header";
 import { addMonths, formatMonth, startOfMonth, todayISO } from "@/lib/dates";
+import { requireModule } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { BudgetForm } from "./budget-form";
 
 export const metadata: Metadata = { title: "Orçamento" };
 
 export default async function BudgetPage({ searchParams }: PageProps<"/financeiro/orcamento">) {
+  await requireModule("financeiro");
   const sp = await searchParams;
   const month = typeof sp.mes === "string" && /^\d{4}-\d{2}$/.test(sp.mes) ? `${sp.mes}-01` : startOfMonth(todayISO());
   const supabase = await createClient();

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Bell } from "lucide-react";
 import { BrandStyle } from "@/components/brand/brand-style";
 import { LogoLockup } from "@/components/brand/logo";
+import { DemoBanner } from "@/components/layout/demo-banner";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ export default async function PortalLayout({ children }: { children: React.React
   return (
     <div className="min-h-dvh pb-20 md:pb-0">
       <BrandStyle color={gym?.primary_color} />
+      <DemoBanner />
       <header className="no-print sticky top-0 z-30 border-b bg-background/90 backdrop-blur">
         <div className="mx-auto flex h-14 max-w-5xl items-center gap-2 px-4">
           <Link href="/portal" aria-label="Início do portal">

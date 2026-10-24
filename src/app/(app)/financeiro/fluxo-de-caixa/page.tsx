@@ -9,6 +9,7 @@ import { ProjectionChart } from "@/components/charts/projection-chart";
 import { addMonths, endOfMonth, formatMonth, startOfMonth, todayISO } from "@/lib/dates";
 import { formatCurrency, formatPercent } from "@/lib/format";
 import { getMonthly, getProjection } from "@/lib/queries/finance";
+import { requireModule } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import { Info } from "lucide-react";
@@ -17,6 +18,7 @@ export const metadata: Metadata = { title: "Fluxo de caixa" };
 const HORIZONS = [3, 6, 12] as const;
 
 export default async function CashFlowPage({ searchParams }: PageProps<"/financeiro/fluxo-de-caixa">) {
+  await requireModule("financeiro");
   const sp = await searchParams;
   const h = Number(sp.horizonte);
   const horizon = (HORIZONS as readonly number[]).includes(h) ? h : 6;

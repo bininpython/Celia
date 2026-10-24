@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { BrandStyle } from "@/components/brand/brand-style";
+import { DemoBanner } from "@/components/layout/demo-banner";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { requireUser } from "@/lib/auth";
@@ -20,6 +21,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <BrandStyle color={gym?.primary_color} />
       <Sidebar role={user.role} />
       <div className="flex min-w-0 flex-1 flex-col">
+        <DemoBanner />
         <Topbar user={user} unread={count ?? 0} />
         <main className="mx-auto w-full max-w-[96rem] flex-1 space-y-6 p-4 sm:p-6">{children}</main>
       </div>

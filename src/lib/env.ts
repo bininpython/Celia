@@ -16,6 +16,14 @@ export function publicEnv() {
   return parsed.data;
 }
 
+/**
+ * Modo demonstração: dados fictícios em memória, sem banco e sem gravação.
+ * Ativo quando NEXT_PUBLIC_DEMO_MODE=true ou quando o Supabase não está configurado.
+ */
+export function isDemoMode() {
+  return process.env.NEXT_PUBLIC_DEMO_MODE === "true" || !isSupabaseConfigured();
+}
+
 export function isSupabaseConfigured() {
   return !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 }

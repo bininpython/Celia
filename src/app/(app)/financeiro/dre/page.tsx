@@ -9,12 +9,14 @@ import { formatCurrency, formatPercent } from "@/lib/format";
 import { percentChange } from "@/lib/analytics/metrics";
 import { periodPresets, readPeriod } from "@/lib/period";
 import { previousPeriod } from "@/lib/queries/finance";
+import { requireModule } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "DRE gerencial" };
 
 export default async function DrePage({ searchParams }: PageProps<"/financeiro/dre">) {
+  await requireModule("financeiro");
   const sp = await searchParams;
   const { from, to } = readPeriod(sp);
   const basis = sp.regime === "competencia" ? "competencia" : "caixa";

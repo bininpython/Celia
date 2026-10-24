@@ -7,12 +7,14 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { addMonths, todayISO } from "@/lib/dates";
 import { formatCurrency } from "@/lib/format";
+import { requireModule } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { SupplierDialog } from "./supplier-dialog";
 
 export const metadata: Metadata = { title: "Fornecedores" };
 
 export default async function SuppliersPage() {
+  await requireModule("financeiro");
   const supabase = await createClient();
   const since = addMonths(todayISO(), -12);
   const [{ data: suppliers }, { data: spend }] = await Promise.all([

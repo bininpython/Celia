@@ -1,5 +1,8 @@
 # Implantação: Supabase + Vercel
 
+> **Modo visitação:** sem as variáveis do Supabase, o deploy na Vercel funciona normalmente em modo demonstração
+> (dados fictícios, nada é salvo). Siga os passos abaixo quando quiser ativar o uso real.
+
 ## 1. Supabase
 
 1. Crie um projeto em <https://supabase.com> (região São Paulo, `sa-east-1`, recomendada).
@@ -31,7 +34,8 @@
 | `CHECKIN_TOKEN_SECRET` | segredo aleatório longo (`openssl rand -base64 48`) |
 
 4. Faça um novo deploy após cadastrar as variáveis (variáveis `NEXT_PUBLIC_*` entram no build).
-   Sem elas, o sistema exibe a página "Configuração pendente".
+   Sem elas, o sistema funciona em **modo visitação** (dados fictícios). Para forçar o modo visitação mesmo com o
+   Supabase configurado, defina `NEXT_PUBLIC_DEMO_MODE=true`.
 
 ## 3. Primeiro acesso
 

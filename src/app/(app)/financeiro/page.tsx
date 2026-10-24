@@ -12,6 +12,7 @@ import { formatCurrency } from "@/lib/format";
 import { NATURE_LABELS, TX_STATUS } from "@/lib/labels";
 import { periodPresets, readPage, readPeriod, readString } from "@/lib/period";
 import { getFinTotals } from "@/lib/queries/finance";
+import { requireModule } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { cn, sanitizeSearch } from "@/lib/utils";
 import { TransactionDialog, TransactionRowActions } from "./transaction-dialog";
@@ -20,6 +21,7 @@ export const metadata: Metadata = { title: "Financeiro" };
 const PAGE_SIZE = 40;
 
 export default async function FinancePage({ searchParams }: PageProps<"/financeiro">) {
+  await requireModule("financeiro");
   const sp = await searchParams;
   const { from, to } = readPeriod(sp);
   const tipo = readString(sp, "tipo");

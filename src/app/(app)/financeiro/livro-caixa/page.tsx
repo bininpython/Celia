@@ -10,6 +10,7 @@ import { addDays, formatDate } from "@/lib/dates";
 import { formatCurrency } from "@/lib/format";
 import { periodPresets, readPeriod } from "@/lib/period";
 import { getCashBalance } from "@/lib/queries/finance";
+import { requireModule } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 import { BookOpen, Scale, TrendingDown, TrendingUp } from "lucide-react";
@@ -17,6 +18,7 @@ import { BookOpen, Scale, TrendingDown, TrendingUp } from "lucide-react";
 export const metadata: Metadata = { title: "Livro-caixa" };
 
 export default async function CashbookPage({ searchParams }: PageProps<"/financeiro/livro-caixa">) {
+  await requireModule("financeiro");
   const sp = await searchParams;
   const { from, to } = readPeriod(sp);
   const supabase = await createClient();

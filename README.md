@@ -7,6 +7,14 @@ DRE, orçamento), investimentos, inteligência financeira, agenda, relatórios, 
 **Stack:** Next.js 16 (App Router) · React 19 · TypeScript estrito · Tailwind CSS 4 · componentes no padrão shadcn/ui
 (Radix) · Supabase (PostgreSQL, Auth, Storage, RLS) · Recharts · React Hook Form + Zod · Vercel.
 
+## Modo visitação (demonstração)
+
+Enquanto o Supabase não estiver configurado (ou com `NEXT_PUBLIC_DEMO_MODE=true`), o sistema roda em **modo visitação**:
+nenhuma conexão com banco de dados, dados **fictícios** gerados em memória e **nenhuma alteração é salva**. Na tela de
+entrada, escolha um perfil (Administradora, Gerente, Recepção, Professor ou Aluno) para conhecer as funcionalidades.
+Os formulários validam normalmente, mas ao salvar exibem o aviso "Modo demonstração". Para usar com dados reais,
+configure as variáveis do Supabase (ver [`docs/IMPLANTACAO.md`](docs/IMPLANTACAO.md)) e remova `NEXT_PUBLIC_DEMO_MODE`.
+
 ## Começando
 
 ```bash
@@ -37,6 +45,7 @@ Antes do primeiro acesso, aplique as migrations e o seed no Supabase e crie o pr
 | `npm test` | Testes unitários (Vitest) da lógica de negócio |
 | `npm run test:db` | Aplica migrations em um PostgreSQL descartável e testa RLS e regras de negócio |
 | `npm run test:e2e` | Teste ponta a ponta no navegador (Playwright) contra um ambiente em execução |
+| `npm run test:demo` | Percorre todas as páginas no modo visitação, com os 5 perfis |
 | `npm run gen:types` | Regenera `src/types/database.ts` a partir das migrations |
 
 ## Integrações

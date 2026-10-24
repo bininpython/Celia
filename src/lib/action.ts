@@ -1,6 +1,8 @@
 import "server-only";
 import { z } from "zod";
 import { getSessionUser, type SessionUser } from "@/lib/auth";
+import { DEMO_WRITE_MESSAGE } from "@/lib/demo/client";
+import { isDemoMode } from "@/lib/env";
 import { canAccess, type Module } from "@/lib/permissions";
 
 export type ActionResult<T = undefined> =
@@ -51,6 +53,8 @@ export function action<S extends z.ZodType, R>(
       const flat = z.flattenError(parsed.error);
       return fail("Verifique os campos destacados.", flat.fieldErrors as Record<string, string[]>);
     }
+    // No modo demonstração a validação roda normalmente, mas nada é gravado
+    if (isDemoMode()) return fail(DEMO_WRITE_MESSAGE);
     try {
       return await handler(parsed.data, user);
     } catch (e) {

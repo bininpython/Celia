@@ -5,6 +5,8 @@ import { action, dbError, fail, ok } from "@/lib/action";
 import { getSessionUser } from "@/lib/auth";
 import { todayISO } from "@/lib/dates";
 import { canAccess } from "@/lib/permissions";
+import { DEMO_WRITE_MESSAGE } from "@/lib/demo/client";
+import { isDemoMode } from "@/lib/env";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { cancelMembershipSchema, membershipSchema } from "@/lib/validators/billing";
@@ -213,6 +215,7 @@ const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export async function uploadStudentPhoto(formData: FormData) {
   const user = await getSessionUser();
   if (!user || !canAccess(user.role, "alunos_editar")) return fail("Sem permissão.");
+  if (isDemoMode()) return fail(DEMO_WRITE_MESSAGE);
   const id = z.uuid().safeParse(formData.get("student_id"));
   const file = formData.get("photo");
   if (!id.success || !(file instanceof File)) return fail("Arquivo inválido.");
