@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Studio Personal Célia Barbosa — Plataforma de gestão
 
-## Getting Started
+Sistema web para a gestão completa do **Studio Personal Célia Barbosa**: alunos, matrículas, planos, mensalidades,
+pagamentos, fichas de treino, frequência (check-in por QR Code), financeiro empresarial (livro-caixa, fluxo de caixa,
+DRE, orçamento), investimentos, inteligência financeira, agenda, relatórios, equipe/permissões e portal do aluno.
 
-First, run the development server:
+**Stack:** Next.js 16 (App Router) · React 19 · TypeScript estrito · Tailwind CSS 4 · componentes no padrão shadcn/ui
+(Radix) · Supabase (PostgreSQL, Auth, Storage, RLS) · Recharts · React Hook Form + Zod · Vercel.
+
+## Começando
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local     # preencha com as chaves do seu projeto Supabase
+npm run dev                    # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Antes do primeiro acesso, aplique as migrations e o seed no Supabase e crie o primeiro usuário
+(ele vira **administrador** automaticamente). Passo a passo em [`docs/IMPLANTACAO.md`](docs/IMPLANTACAO.md).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Documentação
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Documento | Conteúdo |
+|---|---|
+| [docs/ARQUITETURA.md](docs/ARQUITETURA.md) | Arquitetura, módulos, modelo de dados e decisões técnicas |
+| [docs/IMPLANTACAO.md](docs/IMPLANTACAO.md) | Supabase, Vercel, variáveis de ambiente, primeiro acesso, rotinas agendadas |
+| [docs/SEGURANCA_LGPD.md](docs/SEGURANCA_LGPD.md) | Perfis e permissões, RLS, auditoria, backups e LGPD |
+| [docs/TESTES.md](docs/TESTES.md) | Como executar os testes unitários, de banco e ponta a ponta |
+| [docs/IDENTIDADE_VISUAL.md](docs/IDENTIDADE_VISUAL.md) | Cores, tipografia, símbolo vetorial e responsividade |
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Comando | Descrição |
+|---|---|
+| `npm run dev` / `build` / `start` | Desenvolvimento, build de produção e servidor |
+| `npm run lint` / `typecheck` | ESLint e verificação de tipos |
+| `npm test` | Testes unitários (Vitest) da lógica de negócio |
+| `npm run test:db` | Aplica migrations em um PostgreSQL descartável e testa RLS e regras de negócio |
+| `npm run test:e2e` | Teste ponta a ponta no navegador (Playwright) contra um ambiente em execução |
+| `npm run gen:types` | Regenera `src/types/database.ts` a partir das migrations |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Integrações
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Não há integrações externas prontas além do Supabase. Pagamentos são **registrados manualmente** (PIX, cartão,
+dinheiro, transferência); a tabela `payments` já possui os campos `gateway` e `gateway_reference` para uma integração
+futura com gateway de pagamento. Notificações são **internas** (painel da equipe e portal do aluno com consentimento);
+envio por e-mail/WhatsApp não está implementado.

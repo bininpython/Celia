@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -40,7 +40,6 @@ export function PaymentDialog({
   trigger: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-  const [receipt, setReceipt] = useState<{ paymentId: string; receipt: number } | null>(null);
   const today = todayISO();
   const suggested = useMemo(
     () =>
@@ -71,42 +70,29 @@ export function PaymentDialog({
       notes: "",
     },
     action: registerPayment,
-    onSuccess: (data) => setReceipt(data),
+    // O recibo vai em um toast global: a linha da mensalidade é re-renderizada como paga
+    silentSuccess: true,
+    onSuccess: (data) => {
+      setOpen(false);
+      toast.success(`Pagamento registrado — recibo nº ${data.receipt}.`, {
+        duration: 15000,
+        action: { label: "Imprimir recibo", onClick: () => window.open(`/mensalidades/recibo/${data.paymentId}`, "_blank") },
+      });
+    },
   });
   const w = form.watch(["fine", "interest", "discount"]);
   const total = round2(invoice.amount - Number(w[2] || 0) + Number(w[0] || 0) + Number(w[1] || 0) - invoice.paid);
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(o) => {
-        setOpen(o);
-        if (!o) setReceipt(null);
-      }}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{receipt ? "Pagamento registrado" : "Registrar pagamento"}</DialogTitle>
+          <DialogTitle>Registrar pagamento</DialogTitle>
           <DialogDescription>
             {invoice.studentName} · {invoice.description} · vencimento {formatDate(invoice.due_date)}
           </DialogDescription>
         </DialogHeader>
-        {receipt ? (
-          <div className="space-y-4">
-            <p className="text-sm">Recibo nº {receipt.receipt} emitido.</p>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>
-                Fechar
-              </Button>
-              <Button asChild>
-                <Link href={`/mensalidades/recibo/${receipt.paymentId}`} target="_blank">
-                  Imprimir recibo
-                </Link>
-              </Button>
-            </DialogFooter>
-          </div>
-        ) : (
           <form onSubmit={submit} className="space-y-4" noValidate>
             {suggested.days > 0 && (
               <p className="rounded-md bg-accent px-3 py-2 text-xs text-accent-foreground">
@@ -158,7 +144,6 @@ export function PaymentDialog({
               </Button>
             </DialogFooter>
           </form>
-        )}
       </DialogContent>
     </Dialog>
   );

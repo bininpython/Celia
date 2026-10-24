@@ -1250,6 +1250,7 @@ export type Database = {
     Functions: {
       active_members_at: { Args: { p_date: string }; Returns: number };
       anonymize_student: { Args: { p_student: string }; Returns: undefined };
+      apply_user_app_metadata: { Args: { p_user: string; p_meta: Json }; Returns: undefined };
       auth_role: { Args: Record<PropertyKey, never>; Returns: Database["public"]["Enums"]["app_role"] };
       budget_vs_actual: { Args: { p_month: string }; Returns: { category_id: string; category_name: string; type: Database["public"]["Enums"]["tx_type"]; budget: number; actual: number }[] };
       cash_balance: { Args: { p_at?: string }; Returns: number };

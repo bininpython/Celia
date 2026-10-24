@@ -35,7 +35,7 @@ export function TrendArea({
             <XAxis dataKey="label" {...axisProps} minTickGap={16} />
             <YAxis {...axisProps} width={format === "currency" ? 64 : 36} tickFormatter={format === "currency" ? currencyTick : (v) => formatNumber(v)} allowDecimals={false} />
             <Tooltip content={<ChartTooltip format={format} />} cursor={{ stroke: "var(--muted-foreground)", strokeDasharray: "3 3" }} />
-            <Area type="monotone" dataKey="value" name={name} stroke={color} strokeWidth={2} fill={`url(#${id})`} activeDot={{ r: 4 }} />
+            <Area isAnimationActive={false} type="monotone" dataKey="value" name={name} stroke={color} strokeWidth={2} fill={`url(#${id})`} activeDot={{ r: 4 }} />
           </AreaChart>
         </ResponsiveContainer>
       </div>
@@ -80,7 +80,7 @@ export function SimpleBars({ data, name, format = "number", height = 220, color 
             <XAxis dataKey="label" {...axisProps} minTickGap={8} />
             <YAxis {...axisProps} width={format === "currency" ? 64 : 32} allowDecimals={false} tickFormatter={format === "currency" ? currencyTick : undefined} />
             <Tooltip content={<ChartTooltip format={format} />} cursor={{ fill: "var(--muted)", opacity: 0.6 }} />
-            <Bar dataKey="value" name={name} fill={color} radius={[4, 4, 0, 0]} maxBarSize={32} />
+            <Bar isAnimationActive={false} dataKey="value" name={name} fill={color} radius={[4, 4, 0, 0]} maxBarSize={32} />
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -100,7 +100,7 @@ export function ProgressLine({ data, height = 200 }: { data: Point[]; height?: n
             <XAxis dataKey="label" {...axisProps} minTickGap={16} />
             <YAxis {...axisProps} width={40} unit=" kg" />
             <Tooltip content={<ChartTooltip format="number" />} cursor={{ stroke: "var(--muted-foreground)", strokeDasharray: "3 3" }} />
-            <Line type="monotone" dataKey="value" name="Carga (kg)" stroke={SERIES.income} strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 5 }} />
+            <Line isAnimationActive={false} type="monotone" dataKey="value" name="Carga (kg)" stroke={SERIES.income} strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 5 }} />
           </LineChart>
         </ResponsiveContainer>
       </div>

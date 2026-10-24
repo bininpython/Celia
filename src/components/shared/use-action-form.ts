@@ -19,6 +19,8 @@ export function useActionForm<S extends z.ZodType<FieldValues, FieldValues>, R>(
   successMessage?: string;
   onSuccess?: (data: R) => void;
   refresh?: boolean;
+  /** Não exibe o toast padrão de sucesso (o chamador exibe o seu). */
+  silentSuccess?: boolean;
 }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -39,7 +41,7 @@ export function useActionForm<S extends z.ZodType<FieldValues, FieldValues>, R>(
         );
         return;
       }
-      toast.success(res.message ?? opts.successMessage ?? "Salvo com sucesso.");
+      if (!opts.silentSuccess) toast.success(res.message ?? opts.successMessage ?? "Salvo com sucesso.");
       if (opts.refresh !== false) router.refresh();
       opts.onSuccess?.(res.data);
     });

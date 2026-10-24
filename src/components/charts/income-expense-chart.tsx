@@ -25,10 +25,10 @@ export function IncomeExpenseChart({ data, height = 280, showResult = true }: { 
             <XAxis dataKey="label" {...axisProps} />
             <YAxis {...axisProps} tickFormatter={currencyTick} width={64} />
             <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--muted)", opacity: 0.6 }} />
-            <Bar dataKey="income" name="Receitas" fill={SERIES.income} radius={[4, 4, 0, 0]} maxBarSize={28} />
-            <Bar dataKey="expense" name="Despesas" fill={SERIES.expense} radius={[4, 4, 0, 0]} maxBarSize={28} />
+            <Bar isAnimationActive={false} dataKey="income" name="Receitas" fill={SERIES.income} radius={[4, 4, 0, 0]} maxBarSize={28} />
+            <Bar isAnimationActive={false} dataKey="expense" name="Despesas" fill={SERIES.expense} radius={[4, 4, 0, 0]} maxBarSize={28} />
             {showResult && (
-              <Line dataKey="result" name="Resultado" stroke={SERIES.third} strokeWidth={2} strokeDasharray="4 3" dot={{ r: 3 }} type="monotone" />
+              <Line isAnimationActive={false} dataKey="result" name="Resultado" stroke={SERIES.third} strokeWidth={2} strokeDasharray="4 3" dot={{ r: 3 }} type="monotone" />
             )}
           </ComposedChart>
         </ResponsiveContainer>
@@ -54,8 +54,8 @@ export function YearComparisonChart({ data, height = 240 }: { data: { label: str
             <XAxis dataKey="label" {...axisProps} />
             <YAxis {...axisProps} tickFormatter={currencyTick} width={64} />
             <Tooltip content={<ChartTooltip />} cursor={{ fill: "var(--muted)", opacity: 0.6 }} />
-            <Bar dataKey="current" name="Ano atual" fill={SERIES.income} radius={[4, 4, 0, 0]} maxBarSize={22} />
-            <Bar dataKey="previous" name="Ano anterior" fill={SERIES.expense} radius={[4, 4, 0, 0]} maxBarSize={22} />
+            <Bar isAnimationActive={false} dataKey="current" name="Ano atual" fill={SERIES.income} radius={[4, 4, 0, 0]} maxBarSize={22} />
+            <Bar isAnimationActive={false} dataKey="previous" name="Ano anterior" fill={SERIES.expense} radius={[4, 4, 0, 0]} maxBarSize={22} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -31,7 +31,7 @@ export function PortalNav() {
             className={cn("flex flex-col items-center gap-0.5 py-2 text-[10px] text-muted-foreground", isActive(i.href) && "text-primary")}
           >
             <i.icon className="size-5" />
-            <span className="truncate">{i.label.replace("Meus ", "")}</span>
+            <span className="w-full truncate text-center">{i.short}</span>
           </Link>
         ))}
       </nav>

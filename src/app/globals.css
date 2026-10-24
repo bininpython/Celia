@@ -137,3 +137,30 @@
     color: #000;
   }
 }
+
+/* Telas grandes (monitores 2K/4K e TVs): escala proporcional da interface.
+   Tamanhos são definidos em rem, então tudo cresce junto e permanece legível à distância. */
+@media (min-width: 1920px) {
+  html {
+    font-size: 112.5%;
+  }
+}
+@media (min-width: 2560px) {
+  html {
+    font-size: 137.5%;
+  }
+}
+@media (min-width: 3200px) {
+  html {
+    font-size: 175%;
+  }
+}
+
+/* Alvos de toque confortáveis em celulares e tablets */
+@media (pointer: coarse) {
+  [data-slot="button"],
+  [data-slot="input"],
+  [data-slot="native-select"] {
+    min-height: 2.5rem;
+  }
+}

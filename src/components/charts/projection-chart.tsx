@@ -23,9 +23,9 @@ export function ProjectionChart({ data, height = 260 }: { data: { month: string;
             <YAxis {...axisProps} tickFormatter={currencyTick} width={64} />
             <ReferenceLine y={0} stroke="var(--muted-foreground)" />
             <Tooltip content={<ChartTooltip />} cursor={{ stroke: "var(--muted-foreground)", strokeDasharray: "3 3" }} />
-            <Line dataKey="balance" name="Base" stroke={SERIES.income} strokeWidth={2} dot={{ r: 3 }} type="monotone" />
-            <Line dataKey="pessimista" name="Pessimista" stroke={SERIES.expense} strokeWidth={2} strokeDasharray="5 4" dot={false} type="monotone" />
-            <Line dataKey="otimista" name="Otimista" stroke={SERIES.third} strokeWidth={2} strokeDasharray="5 4" dot={false} type="monotone" />
+            <Line isAnimationActive={false} dataKey="balance" name="Base" stroke={SERIES.income} strokeWidth={2} dot={{ r: 3 }} type="monotone" />
+            <Line isAnimationActive={false} dataKey="pessimista" name="Pessimista" stroke={SERIES.expense} strokeWidth={2} strokeDasharray="5 4" dot={false} type="monotone" />
+            <Line isAnimationActive={false} dataKey="otimista" name="Otimista" stroke={SERIES.third} strokeWidth={2} strokeDasharray="5 4" dot={false} type="monotone" />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -49,7 +49,7 @@ export function PaybackChart({ data, height = 220 }: { data: { month: number; cu
             <YAxis {...axisProps} tickFormatter={currencyTick} width={64} />
             <ReferenceLine y={0} stroke="var(--muted-foreground)" />
             <Tooltip content={<ChartTooltip labelFormatter={(m) => `Mês ${m}`} />} cursor={{ stroke: "var(--muted-foreground)", strokeDasharray: "3 3" }} />
-            <Line dataKey="cumulative" name="Resultado acumulado" stroke={SERIES.income} strokeWidth={2} dot={false} type="monotone" />
+            <Line isAnimationActive={false} dataKey="cumulative" name="Resultado acumulado" stroke={SERIES.income} strokeWidth={2} dot={false} type="monotone" />
           </LineChart>
         </ResponsiveContainer>
       </div>

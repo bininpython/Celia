@@ -286,3 +286,19 @@ do $$ begin
 exception when insufficient_privilege then null;
 end $$;
 reset role;
+
+-- ------------------------------------------------------------------ metadados gravados após o INSERT (Supabase Auth)
+reset role;
+select set_config('request.jwt.claim.sub', '', false);
+insert into public.staff (id, gym_id, full_name, role) values ('30000000-0000-4000-8000-000000000001', '00000000-0000-4000-8000-000000000001', 'Prof. Bruna', 'professor');
+insert into auth.users (id, email) values ('10000000-0000-4000-8000-0000000000bb', 'bruna@studio.test');
+update auth.users set raw_app_meta_data = '{"provider":"email","role":"professor","staff_id":"30000000-0000-4000-8000-000000000001"}'
+ where id = '10000000-0000-4000-8000-0000000000bb';
+insert into auth.users (id, email) values ('10000000-0000-4000-8000-0000000000cc', 'bruno@aluno.test');
+update auth.users set raw_app_meta_data = '{"provider":"email","role":"aluno","student_id":"20000000-0000-4000-8000-00000000000b"}'
+ where id = '10000000-0000-4000-8000-0000000000cc';
+do $$ begin
+  assert (select role from public.profiles where id = '10000000-0000-4000-8000-0000000000bb') = 'professor', 'papel aplicado após update';
+  assert (select profile_id from public.staff where id = '30000000-0000-4000-8000-000000000001') = '10000000-0000-4000-8000-0000000000bb', 'funcionário vinculado';
+  assert (select user_id from public.students where id = '20000000-0000-4000-8000-00000000000b') = '10000000-0000-4000-8000-0000000000cc', 'aluno vinculado';
+end $$;

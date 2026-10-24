@@ -53,10 +53,10 @@ export const NAV: NavSection[] = [
 ];
 
 export const PORTAL_NAV = [
-  { href: "/portal", label: "Início", icon: LayoutDashboard },
-  { href: "/portal/treinos", label: "Meus treinos", icon: Dumbbell },
-  { href: "/portal/mensalidades", label: "Mensalidades", icon: Wallet },
-  { href: "/portal/frequencia", label: "Frequência", icon: BarChart3 },
-  { href: "/portal/agenda", label: "Agenda", icon: CalendarDays },
-  { href: "/portal/perfil", label: "Meus dados", icon: Building2 },
+  { href: "/portal", label: "Início", short: "Início", icon: LayoutDashboard },
+  { href: "/portal/treinos", label: "Meus treinos", short: "Treinos", icon: Dumbbell },
+  { href: "/portal/mensalidades", label: "Mensalidades", short: "Pagamentos", icon: Wallet },
+  { href: "/portal/frequencia", label: "Frequência", short: "Frequência", icon: BarChart3 },
+  { href: "/portal/agenda", label: "Agenda", short: "Agenda", icon: CalendarDays },
+  { href: "/portal/perfil", label: "Meus dados", short: "Perfil", icon: Building2 },
 ] as const;
