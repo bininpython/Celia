@@ -76,14 +76,17 @@ export function SelectFilter({
 
 export type PeriodPreset = { label: string; from: string; to: string };
 
-export function PeriodFilter({ from, to, presets }: { from: string; to: string; presets: PeriodPreset[] }) {
+type PeriodProps = { from: string; to: string; presets: PeriodPreset[] };
+
+/** Recria o formulário quando o período da URL muda. */
+export function PeriodFilter(props: PeriodProps) {
+  return <PeriodFilterInner key={`${props.from}|${props.to}`} {...props} />;
+}
+
+function PeriodFilterInner({ from, to, presets }: PeriodProps) {
   const { set, pending } = useSetParams();
   const [f, setF] = useState(from);
   const [t, setT] = useState(to);
-  useEffect(() => {
-    setF(from);
-    setT(to);
-  }, [from, to]);
   return (
     <div className="flex flex-wrap items-center gap-2">
       <NativeSelect

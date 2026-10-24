@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { BrandStyle } from "@/components/brand/brand-style";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Topbar } from "@/components/layout/topbar";
 import { requireUser } from "@/lib/auth";
@@ -9,14 +10,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (user.role === "aluno") redirect("/portal");
 
   const supabase = await createClient();
-  const { count } = await supabase
-    .from("notifications")
-    .select("id", { count: "exact", head: true })
-    .eq("audience", "staff")
-    .is("read_at", null);
+  const [{ count }, { data: gym }] = await Promise.all([
+    supabase.from("notifications").select("id", { count: "exact", head: true }).eq("audience", "staff").is("read_at", null),
+    supabase.from("gyms").select("primary_color").single(),
+  ]);
 
   return (
     <div className="flex min-h-dvh">
+      <BrandStyle color={gym?.primary_color} />
       <Sidebar role={user.role} />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar user={user} unread={count ?? 0} />

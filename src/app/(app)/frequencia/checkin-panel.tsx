@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Camera, CameraOff, CheckCircle2, Hash, Loader2, QrCode, UserRound } from "lucide-react";
 import { toast } from "sonner";
@@ -128,15 +128,17 @@ export function CheckinPanel({ students }: { students: { id: string; full_name: 
   );
 }
 
+const noopSubscribe = () => () => {};
+
 function QrScanner({ onScan, disabled }: { onScan: (token: string) => void; disabled: boolean }) {
   const video = useRef<HTMLVideoElement>(null);
   const [active, setActive] = useState(false);
-  const [supported, setSupported] = useState(true);
+  const supported = useSyncExternalStore(
+    noopSubscribe,
+    () => !!window.BarcodeDetector && !!navigator.mediaDevices?.getUserMedia,
+    () => true,
+  );
   const lastScan = useRef<{ value: string; at: number }>({ value: "", at: 0 });
-
-  useEffect(() => {
-    setSupported(typeof window !== "undefined" && !!window.BarcodeDetector && !!navigator.mediaDevices?.getUserMedia);
-  }, []);
 
   useEffect(() => {
     if (!active) return;
