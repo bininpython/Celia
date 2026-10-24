@@ -1251,6 +1251,8 @@ export type Database = {
       active_members_at: { Args: { p_date: string }; Returns: number };
       anonymize_student: { Args: { p_student: string }; Returns: undefined };
       auth_role: { Args: Record<PropertyKey, never>; Returns: Database["public"]["Enums"]["app_role"] };
+      budget_vs_actual: { Args: { p_month: string }; Returns: { category_id: string; category_name: string; type: Database["public"]["Enums"]["tx_type"]; budget: number; actual: number }[] };
+      cash_balance: { Args: { p_at?: string }; Returns: number };
       checkins_daily: { Args: { p_from: string; p_to: string }; Returns: { day: string; total: number; unique_students: number }[] };
       checkins_heatmap: { Args: { p_from: string; p_to: string }; Returns: { dow: number; hour: number; total: number }[] };
       current_gym_id: { Args: Record<PropertyKey, never>; Returns: string };
@@ -1258,6 +1260,7 @@ export type Database = {
       enrollments_monthly: { Args: { p_from: string; p_to: string }; Returns: { month: string; new_students: number; cancellations: number }[] };
       fin_by_category: { Args: { p_from: string; p_to: string; p_basis?: string }; Returns: { category_id: string; category_name: string; type: Database["public"]["Enums"]["tx_type"]; nature: Database["public"]["Enums"]["cost_nature"]; dre_group: string; color: string; total: number }[] };
       fin_monthly: { Args: { p_from: string; p_to: string }; Returns: { month: string; income_paid: number; expense_paid: number; income_pending: number; expense_pending: number; income_competence: number; expense_competence: number }[] };
+      fin_totals: { Args: { p_from: string; p_to: string }; Returns: { income_paid: number; expense_paid: number; income_pending: number; expense_pending: number; tuition_received: number; paying_students: number; billed_amount: number; overdue_in_period: number; overdue_total: number; overdue_invoices: number }[] };
       generate_invoices: { Args: { p_month: string }; Returns: number };
       generate_notifications: { Args: { p_gym?: string }; Returns: number };
       has_any_role: { Args: { roles: Database["public"]["Enums"]["app_role"][] }; Returns: boolean };
@@ -1267,6 +1270,7 @@ export type Database = {
       is_trainer: { Args: Record<PropertyKey, never>; Returns: boolean };
       plan_stats: { Args: { p_from: string; p_to: string }; Returns: { plan_id: string; plan_name: string; periodicity: Database["public"]["Enums"]["plan_periodicity"]; price: number; duration_months: number; active_memberships: number; monthly_recurring: number; received: number }[] };
       recompute_invoice_status: { Args: { p_invoice: string }; Returns: undefined };
+      record_health_consent: { Args: { p_student: string }; Returns: undefined };
       renegotiate_invoices: { Args: { p_invoice_ids: string[]; p_installments: number; p_first_due: string; p_total: number; p_notes?: string }; Returns: Database["public"]["Tables"]["invoices"]["Row"][] };
       student_attendance: { Args: { p_days?: number }; Returns: { student_id: string; full_name: string; status: Database["public"]["Enums"]["student_status"]; phone: string; last_checkin: string; checkins_period: number; days_since_last: number }[] };
       student_counts: { Args: Record<PropertyKey, never>; Returns: { ativos: number; suspensos: number; inativos: number; arquivados: number; inadimplentes: number }[] };

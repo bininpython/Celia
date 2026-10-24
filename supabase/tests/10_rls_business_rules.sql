@@ -243,3 +243,15 @@ do $$ begin
   assert (select count(*) from public.gyms) = 0, 'anônimo não vê academia';
 end $$;
 reset role;
+
+-- ------------------------------------------------------------------ agregações do dashboard
+set role authenticated;
+select set_config('request.jwt.claim.sub', '10000000-0000-4000-8000-000000000001', false);
+do $$ declare r record; begin
+  select * into r from public.fin_totals(date_trunc('month', current_date)::date, current_date + 400);
+  assert r.expense_paid = 2000, format('despesa paga no período: %s', r.expense_paid);
+  assert r.tuition_received = 0, 'pagamento estornado não conta como recebido';
+  assert public.cash_balance() = -2000, format('saldo de caixa: %s', public.cash_balance());
+  assert (select actual from public.budget_vs_actual(current_date) where category_name = 'Aluguel') = 2000, 'realizado do orçamento';
+end $$;
+reset role;
