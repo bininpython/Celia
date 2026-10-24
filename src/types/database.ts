@@ -1272,6 +1272,7 @@ export type Database = {
       recompute_invoice_status: { Args: { p_invoice: string }; Returns: undefined };
       record_health_consent: { Args: { p_student: string }; Returns: undefined };
       renegotiate_invoices: { Args: { p_invoice_ids: string[]; p_installments: number; p_first_due: string; p_total: number; p_notes?: string }; Returns: Database["public"]["Tables"]["invoices"]["Row"][] };
+      save_workout_plan: { Args: { p_id: string; p_data: Json }; Returns: string };
       student_attendance: { Args: { p_days?: number }; Returns: { student_id: string; full_name: string; status: Database["public"]["Enums"]["student_status"]; phone: string; last_checkin: string; checkins_period: number; days_since_last: number }[] };
       student_counts: { Args: Record<PropertyKey, never>; Returns: { ativos: number; suspensos: number; inativos: number; arquivados: number; inadimplentes: number }[] };
       update_my_contact: { Args: { p_phone: string; p_email: string; p_address: string; p_emergency_name: string; p_emergency_phone: string; p_notifications: boolean }; Returns: undefined };

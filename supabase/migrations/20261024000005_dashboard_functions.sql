@@ -74,3 +74,49 @@ begin
    where id = p_student and gym_id = public.current_gym_id() and health_consent_at is null;
 end $$;
 revoke execute on function public.record_health_consent(uuid) from public, anon;
+
+-- Salva ficha de treino completa (plano + divisões + exercícios) em uma transação
+create or replace function public.save_workout_plan(p_id uuid, p_data jsonb)
+returns uuid language plpgsql security invoker set search_path = public as $$
+declare
+  v_id uuid := p_id;
+  v_div jsonb;
+  v_item jsonb;
+  v_div_id uuid;
+  v_pos int := 0;
+  v_ipos int;
+begin
+  if not public.is_trainer() then
+    raise exception 'Sem permissão para editar fichas.' using errcode = '42501';
+  end if;
+  if v_id is null then
+    update public.workout_plans set active = false, end_date = coalesce(end_date, current_date)
+     where student_id = (p_data ->> 'student_id')::uuid and active;
+    insert into public.workout_plans (student_id, teacher_id, title, goal, start_date, end_date, notes)
+    values ((p_data ->> 'student_id')::uuid, nullif(p_data ->> 'teacher_id', '')::uuid, p_data ->> 'title',
+            p_data ->> 'goal', (p_data ->> 'start_date')::date, nullif(p_data ->> 'end_date', '')::date, p_data ->> 'notes')
+    returning id into v_id;
+  else
+    update public.workout_plans set
+      teacher_id = nullif(p_data ->> 'teacher_id', '')::uuid, title = p_data ->> 'title', goal = p_data ->> 'goal',
+      start_date = (p_data ->> 'start_date')::date, end_date = nullif(p_data ->> 'end_date', '')::date, notes = p_data ->> 'notes'
+    where id = v_id;
+    if not found then raise exception 'Ficha não encontrada.'; end if;
+    delete from public.workout_divisions where plan_id = v_id;
+  end if;
+
+  for v_div in select * from jsonb_array_elements(p_data -> 'divisions') loop
+    insert into public.workout_divisions (plan_id, label, name, position)
+    values (v_id, v_div ->> 'label', v_div ->> 'name', v_pos) returning id into v_div_id;
+    v_pos := v_pos + 1;
+    v_ipos := 0;
+    for v_item in select * from jsonb_array_elements(v_div -> 'items') loop
+      insert into public.workout_exercises (division_id, exercise_id, position, sets, reps, load_kg, rest_seconds, notes)
+      values (v_div_id, (v_item ->> 'exercise_id')::uuid, v_ipos, (v_item ->> 'sets')::smallint, v_item ->> 'reps',
+              nullif(v_item ->> 'load_kg', '')::numeric, nullif(v_item ->> 'rest_seconds', '')::smallint, v_item ->> 'notes');
+      v_ipos := v_ipos + 1;
+    end loop;
+  end loop;
+  return v_id;
+end $$;
+revoke execute on function public.save_workout_plan(uuid, jsonb) from anon;

@@ -255,3 +255,34 @@ do $$ declare r record; begin
   assert (select actual from public.budget_vs_actual(current_date) where category_name = 'Aluguel') = 2000, 'realizado do orçamento';
 end $$;
 reset role;
+
+-- ------------------------------------------------------------------ ficha completa (professor)
+set role authenticated;
+select set_config('request.jwt.claim.sub', '10000000-0000-4000-8000-000000000003', false);
+do $$ declare v uuid; v_ex uuid; begin
+  select id into v_ex from public.exercises where name = 'Agachamento livre';
+  v := public.save_workout_plan(null, jsonb_build_object(
+    'student_id', '20000000-0000-4000-8000-00000000000b', 'title', 'Força', 'start_date', current_date::text,
+    'divisions', jsonb_build_array(
+      jsonb_build_object('label', 'A', 'name', 'Pernas', 'items', jsonb_build_array(
+        jsonb_build_object('exercise_id', v_ex, 'sets', 4, 'reps', '8-10', 'load_kg', 60, 'rest_seconds', 90))),
+      jsonb_build_object('label', 'B', 'name', 'Superiores', 'items', jsonb_build_array(
+        jsonb_build_object('exercise_id', v_ex, 'sets', 3, 'reps', '12'))))));
+  assert (select count(*) from public.workout_divisions where plan_id = v) = 2, 'duas divisões';
+  perform public.save_workout_plan(v, jsonb_build_object(
+    'student_id', '20000000-0000-4000-8000-00000000000b', 'title', 'Força 2', 'start_date', current_date::text,
+    'divisions', jsonb_build_array(jsonb_build_object('label', 'A', 'items', jsonb_build_array(
+        jsonb_build_object('exercise_id', v_ex, 'sets', 5, 'reps', '5'))))));
+  assert (select count(*) from public.workout_exercises e join public.workout_divisions d on d.id = e.division_id where d.plan_id = v) = 1,
+    'edição substitui as divisões';
+  assert (select title from public.workout_plans where id = v) = 'Força 2', 'título atualizado';
+end $$;
+reset role;
+set role authenticated;
+select set_config('request.jwt.claim.sub', '10000000-0000-4000-8000-000000000002', false);
+do $$ begin
+  perform public.save_workout_plan(null, '{"student_id":"20000000-0000-4000-8000-00000000000b","title":"x","start_date":"2026-01-01","divisions":[]}'::jsonb);
+  raise exception 'recepção salvou ficha';
+exception when insufficient_privilege then null;
+end $$;
+reset role;
