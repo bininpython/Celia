@@ -1,0 +1,135 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/inter";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Identidade visual — Studio Personal Célia Barbosa
+   Laranja principal #FF651C · branco · grafite · laranja escuro */
+:root {
+  --radius: 0.625rem;
+  --background: #ffffff;
+  --foreground: #1f2328;
+  --card: #ffffff;
+  --card-foreground: #1f2328;
+  --popover: #ffffff;
+  --popover-foreground: #1f2328;
+  --primary: #ff651c;
+  --primary-foreground: #ffffff;
+  --primary-strong: #d94c0b;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #2b2f36;
+  --muted: #f5f5f6;
+  --muted-foreground: #646a73;
+  --accent: #fff1ea;
+  --accent-foreground: #b23d06;
+  --destructive: #dc2626;
+  --success: #15803d;
+  --warning: #b45309;
+  --border: #e6e7ea;
+  --input: #dcdee2;
+  --ring: #ff651c;
+  --sidebar: #fafafa;
+  --sidebar-foreground: #2b2f36;
+  --sidebar-border: #eceef1;
+  --chart-1: #ff651c;
+  --chart-2: #2b2f36;
+  --chart-3: #9aa1ab;
+  --chart-4: #f59e0b;
+  --chart-5: #b23d06;
+  --chart-income: #ff651c;
+  --chart-expense: #3f4650;
+  --chart-grid: #eceef1;
+}
+
+.dark {
+  --background: #141619;
+  --foreground: #eceef1;
+  --card: #1b1e22;
+  --card-foreground: #eceef1;
+  --popover: #1b1e22;
+  --popover-foreground: #eceef1;
+  --primary: #ff651c;
+  --primary-foreground: #ffffff;
+  --primary-strong: #ff8247;
+  --secondary: #262a30;
+  --secondary-foreground: #eceef1;
+  --muted: #22262b;
+  --muted-foreground: #9aa1ab;
+  --accent: #3a2418;
+  --accent-foreground: #ffb08a;
+  --destructive: #ef4444;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --border: #2c3036;
+  --input: #343940;
+  --ring: #ff651c;
+  --sidebar: #17191d;
+  --sidebar-foreground: #dfe2e6;
+  --sidebar-border: #262a30;
+  --chart-1: #ff7a3d;
+  --chart-2: #c9ced6;
+  --chart-3: #6b727c;
+  --chart-4: #fbbf24;
+  --chart-5: #ffb08a;
+  --chart-income: #ff7a3d;
+  --chart-expense: #aab1bb;
+  --chart-grid: #2c3036;
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-strong: var(--primary-strong);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}
